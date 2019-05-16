@@ -28,7 +28,7 @@
     };
 
     var game = new Phaser.Game(config);
-    
+
     var Platform;
     var Player;
     var theArrowKeys;
@@ -72,14 +72,14 @@
       //Platforms
       Platform = this.physics.add.staticGroup();
       Platform.create(0, 600, "BarfGround"); //Bottom Left Platform 1
-      Platform.create(0, 800, "BarfGround"); //Bottom Left Platform 2
+      Platform.create(200, 800, "BarfGround"); //Bottom Left Platform 2
       Platform.create(0, 400, "BarfGround"); //Center Left Platform
       Platform.create(500, 300, "BarfGround"); //Top Center Platform
       Platform.create(500, 500, "BarfGround"); //Center Platform
       Platform.create(500, 700, "BarfGround"); //Bottom Center Platform
       Platform.create(1024, 400, "BarfGround"); //Center Right Platform
       Platform.create(1024, 600, "BarfGround"); //Bottom Right Platform 1
-      Platform.create(1024, 800, "BarfGround"); //Bottom Right Platform 2
+      Platform.create(750, 800, "BarfGround"); //Bottom Right Platform 2
       //this.add.image(0, 0, "Bush").setOrigin(0, 0);
 
       //Player Creation
@@ -111,46 +111,47 @@
         frameRate: 10,
         repeat: -1
       });
-      
+
       //Star Groups
       StarRain1 = this.physics.add.group //Stars
       ({
         key: 'Starr',
         repeat: 7,
-        setXY: { x: 12, y: 150, stepX: 165, stepY: 0}
+        setXY: { x: 12, y: 150, stepX: 140, stepY: 0}
       });
       StarRain1.children.iterate(function (child)
       {
         child.setBounceY(Phaser.Math.FloatBetween(0.5, 0.8));
       });
-      StarRain2 = this.physics.add.group //Stars
-      ({
-        key: 'Starr',
-        repeat: 7,
-        setXY: { x: 12, y: 450, stepX: 165, stepY: 0}
-      });
-      StarRain2.children.iterate(function (child)
-      {
-        child.setBounceY(Phaser.Math.FloatBetween(0.5, 0.8));
-      });
-      StarRain3 = this.physics.add.group //Stars
-      ({
-        key: 'Starr',
-        repeat: 13,
-        setXY: { x: 12, y: 650, stepX: 165, stepY: 0}
-      });
-      StarRain3.children.iterate(function (child)
-      {
-        child.setBounceY(Phaser.Math.FloatBetween(0.5, 0.8));
-      });
+      // StarRain2 = this.physics.add.group //Stars
+      // ({
+      //   key: 'Starr',
+      //   repeat: 7,
+      //   setXY: { x: 12, y: 450, stepX: 165, stepY: 0}
+      // });
+      // StarRain2.children.iterate(function (child)
+      // {
+      //   child.setBounceY(Phaser.Math.FloatBetween(0.5, 0.8));
+      // });
+      // StarRain3 = this.physics.add.group //Stars
+      // ({
+      //   key: 'Starr',
+      //   repeat: 13,
+      //   setXY: { x: 12, y: 650, stepX: 165, stepY: 0}
+      // });
+      // StarRain3.children.iterate(function (child)
+      // {
+      //   child.setBounceY(Phaser.Math.FloatBetween(0.5, 0.8));
+      // });
       this.physics.add.collider(StarRain1, Platform);
-      this.physics.add.collider(StarRain2, Platform);
-      this.physics.add.collider(StarRain3, Platform);
+      // this.physics.add.collider(StarRain2, Platform);
+      // this.physics.add.collider(StarRain3, Platform);
       this.physics.add.overlap(Player, StarRain1, collectStarr, null, this);
-      this.physics.add.overlap(Player, StarRain2, collectStarr, null, this);
-      this.physics.add.overlap(Player, StarRain3, collectStarr, null, this);
+      // this.physics.add.overlap(Player, StarRain2, collectStarr, null, this);
+      // this.physics.add.overlap(Player, StarRain3, collectStarr, null, this);
 
-      HellBombs = this.physics.add.group(); //Bombs
+      //Bombs
+      HellBombs = this.physics.add.group();
       this.physics.add.collider(HellBombs, Platform);
       this.physics.add.collider(Player, HellBombs, hitBomb, null, this);
 
@@ -186,7 +187,7 @@
       {
         return;
       }
-      else if(Score >= 2100)
+      else if(Score >= 800)
       {
         youWin.setText("You Win!");
       }
@@ -198,40 +199,35 @@
       Score += 100;
       scoreText.setText("Score: " + Score);
 
-      if(StarRain1.countActive(true) === 0 || StarRain2.countActive(true) === 0 || StarRain3.countActive(true) === 0)
+      console.log(StarRain1.countActive(true))
+
+      if(StarRain1.countActive(true) === 8, 6, 4, 2 /*&& StarRain2.countActive(true) === 0 && StarRain3.countActive(true) === 0*/)
       {
-      var x1 = (Player.x1 < 400) ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
-      var Bomb1 = HellBombs.create(x, 16, "Bombee");
+      var x1 = (Player.x < 400) ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 1024);
+      var Bomb1 = HellBombs.create(x1, 16, "Bombee");
       Bomb1.setBounce(1);
       Bomb1.setCollideWorldBounds(true);
       Bomb1.setVelocity(Phaser.Math.Between(-200, 200), 20);
       Bomb1.allowGravity = false;
       }
-      else if(StarRain1.countActive(true) === 0 && StarRain2.countActive(true) === 0 && StarRain3.countActive(true) === 0)
-      {
-        StarRain1.children.iterate(function(child) //Reseter
-        {
-          child.enableBody(true, child.x, 0, true, true);
-        });
-      }
-      /*if(StarRain2.countActive(true) === 0)
-      {
-      var x2 = (Player.x2 < 400) ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
-      var Bomb2 = HellBombs.create(x2, 16, "Bombee");
-      Bomb2.setBounce(1);
-      Bomb2.setCollideWorldBounds(true);
-      Bomb2.setVelocity(Phaser.Math.Between(-200, 200), 20);
-      Bomb2.allowGravity = false;
-      }
-      if(StarRain3.countActive(true) === 0)
-      {
-      var x3 = (Player.x3 < 400) ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
-      var Bomb3 = HellBombs.create(x, 16, "bombee");
-      Bomb3.setBounce(1);
-      Bomb3.setCollideWorldBounds(true);
-      Bomb3.setVelocity(Phaser.Math.Between(-200, 200), 20);
-      Bomb3.allowGravity = false;
-      }*/
+      // if(StarRain2.countActive(true) === 0)
+      // {
+      // var x2 = (Player.x < 400) ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 1024);
+      // var Bomb2 = HellBombs.create(x2, 16, "Bombee");
+      // Bomb2.setBounce(1);
+      // Bomb2.setCollideWorldBounds(true);
+      // Bomb2.setVelocity(Phaser.Math.Between(-200, 200), 20);
+      // Bomb2.allowGravity = false;
+      // }
+      // if(StarRain3.countActive(true) === 0)
+      // {
+      // var x3 = (Player.x < 400) ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 1024);
+      // var Bomb3 = HellBombs.create(x3, 16, "bombee");
+      // Bomb3.setBounce(1);
+      // Bomb3.setCollideWorldBounds(true);
+      // Bomb3.setVelocity(Phaser.Math.Between(-200, 200), 20);
+      // Bomb3.allowGravity = false;
+      // }
     }
 
     //Bomb Explode
